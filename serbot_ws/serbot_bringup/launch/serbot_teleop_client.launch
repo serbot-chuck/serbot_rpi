@@ -1,0 +1,5 @@
+<launch>
+  <!-- serbot_teleop_key already has its own built in velocity smoother -->
+  <node pkg="serbot_bringup" type="serbot_teleop_client.py" name="serbot_teleop_client"  output="screen">
+  </node>
+</launch>
