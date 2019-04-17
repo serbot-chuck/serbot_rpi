@@ -29,8 +29,8 @@ Motor2E = 23
 # How many times to turn the pin on and off each second
 Frequency = 100
 # How long the pin stays on each cycle, as a percent (here, it's 30%)
-DutyCycle = 20
-DutyCycle2 = 25
+DutyCycle = 30
+DutyCycle2 = 35
 # Setting the duty cycle to 0 means the motors will not turn
 Stop = 0
 
@@ -96,12 +96,12 @@ def Backwards():
 # Turn left
 def Left():
 
-    p1.start(DutyCycle)
+#    p1.start(DutyCycle)
     p2.start(DutyCycle)
 
-    GPIO.output(Motor1A,GPIO.HIGH)
-    GPIO.output(Motor1B,GPIO.LOW)
-    GPIO.output(Motor1E,GPIO.HIGH)
+#    GPIO.output(Motor1A,GPIO.HIGH)
+#    GPIO.output(Motor1B,GPIO.LOW)
+#    GPIO.output(Motor1E,GPIO.HIGH)
 
     GPIO.output(Motor2A,GPIO.HIGH)
     GPIO.output(Motor2B,GPIO.LOW)
@@ -115,15 +115,15 @@ def Left():
 # Turn Right
 def Right():
     p1.start(DutyCycle2)
-    p2.start(DutyCycle)
+#    p2.start(DutyCycle)
 
     GPIO.output(Motor1A,GPIO.HIGH)
     GPIO.output(Motor1B,GPIO.LOW)
     GPIO.output(Motor1E,GPIO.HIGH)
 
-    GPIO.output(Motor2A,GPIO.HIGH)
-    GPIO.output(Motor2B,GPIO.LOW)
-    GPIO.output(Motor2E,GPIO.HIGH)
+#    GPIO.output(Motor2A,GPIO.HIGH)
+#    GPIO.output(Motor2B,GPIO.LOW)
+#    GPIO.output(Motor2E,GPIO.HIGH)
 
 #    pwmMotorAForwards.ChangeDutyCycle(DutyCycle)
 #    pwmMotorABackwards.ChangeDutyCycle(Stop)
