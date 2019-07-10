@@ -2,13 +2,18 @@
   <arg name="multi_robot_name" default=""/>
   <arg name="set_lidar_frame_id" default="base_scan"/>
 
-  
-  <include file="$(find serbot_bringup)/launch/rplidar.launch">
-<!--    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/> -->
+  <include file="$(find serbot_bringup)/launch/serbot_core.launch">
   </include>
 
+  
+  <include file="$(find serbot_bringup)/launch/rplidar.launch">
+  </include>
+<!--
   <include file="$(find serbot_bringup)/launch/serbot_teleop_client.launch">
   </include>
+-->
+  
+  <!--<include file="$(find serbot_bringup)/launch/serbot_localization.launch"/>-->
 
   <node pkg="serbot_bringup" type="serbot_diagnostics" name="serbot_diagnostics" output="screen"/>
 </launch>

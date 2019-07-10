@@ -1,0 +1,29 @@
+<launch>
+
+  <node pkg="serbot_bringup" name="serbot_node" type="serbot_teleop_control.py" respawn="true" output="screen">
+	<param name="cmd_vel" value="cmd_vel"/>
+	<param name="pwm_topic" value="pwm"/>
+	<param name="drive_topic" value="ackermann_cmd"/>
+	<param name="max_vel" value="2.4"/>
+	<param name="min_vel" value="0.7"/>
+	<param name="wheelbase" value="0.28"/>
+	<param name="max_steering_angle" value="25.0"/>
+	</node>
+
+  
+  <include file="$(find serbot_bringup)/launch/rplidar.launch">
+  </include>
+
+
+  <include file="$(find serbot_bringup)/launch/serbot_tf.launch">
+  </include>
+
+
+  <!--tf to vel -->	
+  <node pkg="serbot_bringup" name="serbot_vel_node" type="tf_to_vel.py" respawn="true" output="screen">
+  <param name="vel_topic" value="velocity"/>
+  <param name="base_link" value="map"/>
+  <param name="child_link" value="base_link"/>
+  </node>
+
+</launch>

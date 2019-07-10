@@ -1,0 +1,199 @@
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
+import RPi.GPIO as GPIO
+
+# Set the GPIO modes
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+
+# Set variables for the GPIO motor pins
+#RIGHT
+Motor1A = 16
+Motor1B = 18
+Motor1E = 22
+
+#LEFT
+#Motor2A = 19
+#Motor2B = 21
+#Motor2E = 23
+
+Motor2A = 21
+Motor2B = 19
+Motor2E = 23
+
+#Motor2A = 23
+#Motor2B = 21
+#Motor2E = 19
+
+# How many times to turn the pin on and off each second
+Frequency = 100
+# How long the pin stays on each cycle, as a percent (here, it's 30%)
+DutyCycle = 30
+DutyCycle2 = 35
+# Setting the duty cycle to 0 means the motors will not turn
+Stop = 0
+
+#topics
+cmd_vel_topic = "/cmd_vel"
+vel_topic = "/mavros/local_position/velocity"
+goal_topic = "/goal"
+pose_topic = "/mavros/local_position/pose"
+encoder_vel_topic = "/encoder_vel"
+
+# init topics
+cmd_vel_topic = "/cmd_vel"       # remote via velocity
+pwm_topic = "/pwm"               # direct remote PWM
+drive_topic ="/ackermann_cmd"   # remote like-car
+pwm_output_topic = "/pwm_output"   # remote like-car
+vel_topic = "/mavros/local_position/velocity"
+param_topic = "/params"
+setmode_srv_topic = "/car/set_mode"
+
+# Set the GPIO Pin mode to be Output
+GPIO.setup(Motor1A,GPIO.OUT)
+GPIO.setup(Motor1B,GPIO.OUT)
+GPIO.setup(Motor1E,GPIO.OUT)
+
+GPIO.setup(Motor2A,GPIO.OUT)
+GPIO.setup(Motor2B,GPIO.OUT)
+GPIO.setup(Motor2E,GPIO.OUT)
+
+# Set the GPIO to software PWM at 'Frequency' Hertz
+p1 = GPIO.PWM(Motor1E, Frequency)
+p2 = GPIO.PWM(Motor2E, Frequency)
+
+p1.start(Stop)
+p2.start(Stop)
+
+# Turn all motors off
+def StopMotors():
+    p1.start(Stop)
+    p2.start(Stop)
+
+    GPIO.output(Motor1E,GPIO.LOW)
+    GPIO.output(Motor2E,GPIO.LOW)
+
+# Turn both motors forwards
+def Forwards():
+    p1.start(DutyCycle2)
+    p2.start(DutyCycle)
+
+    GPIO.output(Motor1A,GPIO.HIGH)
+    GPIO.output(Motor1B,GPIO.LOW)
+    GPIO.output(Motor1E,GPIO.HIGH)
+
+    GPIO.output(Motor2A,GPIO.HIGH)
+    GPIO.output(Motor2B,GPIO.LOW)
+    GPIO.output(Motor2E,GPIO.HIGH)
+
+#    pwmMotorAForwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorABackwards.ChangeDutyCycle(Stop)
+#    pwmMotorBForwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorBBackwards.ChangeDutyCycle(Stop)
+
+def Backwards():
+    p1.start(DutyCycle2)
+    p2.start(DutyCycle)
+
+    GPIO.output(Motor1A,GPIO.LOW)
+    GPIO.output(Motor1B,GPIO.HIGH)
+    GPIO.output(Motor1E,GPIO.HIGH)
+
+    GPIO.output(Motor2A,GPIO.LOW)
+    GPIO.output(Motor2B,GPIO.HIGH)
+    GPIO.output(Motor2E,GPIO.HIGH)
+
+#    pwmMotorAForwards.ChangeDutyCycle(Stop)
+#    pwmMotorABackwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorBForwards.ChangeDutyCycle(Stop)
+#    pwmMotorBBackwards.ChangeDutyCycle(DutyCycle)
+
+# Turn left
+def Left():
+
+#    p1.start(DutyCycle)
+    p2.start(DutyCycle)
+
+#    GPIO.output(Motor1A,GPIO.HIGH)
+#    GPIO.output(Motor1B,GPIO.LOW)
+#    GPIO.output(Motor1E,GPIO.HIGH)
+
+    GPIO.output(Motor2A,GPIO.HIGH)
+    GPIO.output(Motor2B,GPIO.LOW)
+    GPIO.output(Motor2E,GPIO.HIGH)
+
+#    pwmMotorAForwards.ChangeDutyCycle(Stop)
+#    pwmMotorABackwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorBForwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorBBackwards.ChangeDutyCycle(Stop)
+
+# Turn Right
+def Right():
+    p1.start(DutyCycle2)
+#    p2.start(DutyCycle)
+
+    GPIO.output(Motor1A,GPIO.HIGH)
+    GPIO.output(Motor1B,GPIO.LOW)
+    GPIO.output(Motor1E,GPIO.HIGH)
+
+#    GPIO.output(Motor2A,GPIO.HIGH)
+#    GPIO.output(Motor2B,GPIO.LOW)
+#    GPIO.output(Motor2E,GPIO.HIGH)
+
+#    pwmMotorAForwards.ChangeDutyCycle(DutyCycle)
+#    pwmMotorABackwards.ChangeDutyCycle(Stop)
+#    pwmMotorBForwards.ChangeDutyCycle(Stop)
+#    pwmMotorBBackwards.ChangeDutyCycle(DutyCycle)
+
+# Message handler
+def CommandCallback(commandMessage):
+#    rospy.loginfo(rospy.get_caller_id() + "I heard %s", commandMessage.data)
+    command = commandMessage.data
+    if command == 'w':
+        print('Moving forwards')
+        Forwards()
+    elif command == 's':
+        print('Moving backwards')
+        Backwards()
+    elif command == 'a':
+        print('Turning left')
+        Left()
+    elif command == 'd':
+        print('Turning right')
+        Right()
+    elif command == ' ':
+        print('Stopping')
+        StopMotors()
+    else:
+        print('Unknown command, stopping instead')
+        StopMotors()
+
+
+#def callback(data):
+#    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    
+def listener():
+    rospy.init_node('driver', anonymous=True)
+
+    rospy.Subscriber("command", String, CommandCallback)
+
+    # spin() simply keeps python from exiting until this node is stopped
+    rospy.spin()
+
+    print('Shutting down: stopping motors')
+    StopMotors()
+    GPIO.cleanup()
+
+if __name__ == '__main__':
+    listener()
+
+    # get args from ros params
+    ## topics
+    cmd_vel_topic = rospy.get_param('~cmd_vel', cmd_vel_topic)
+    pwm_topic = rospy.get_param('~pwm_topic', pwm_topic)
+    pwm_output_topic = rospy.get_param('~pwm_output_topic', pwm_output_topic)
+    drive_topic = rospy.get_param('~drive_topic', drive_topic)
+    param_topic = rospy.get_param('~param_topic', param_topic)
+    vel_topic = rospy.get_param('~vel_topic', vel_topic)
+
