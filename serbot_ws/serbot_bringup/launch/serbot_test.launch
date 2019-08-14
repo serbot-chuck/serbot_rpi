@@ -14,7 +14,7 @@
   <include file="$(find serbot_bringup)/launch/serbot_teleop_client.launch">
   </include>
 -->
-  <node pkg="serbot_bringup" type="serbot_sound.py" name="serbot_sound"/>
+  <node name="sound_play" pkg="serbot_bringup" type="play_sound.py" />
   
   <!--<include file="$(find serbot_bringup)/launch/serbot_localization.launch"/>-->
 

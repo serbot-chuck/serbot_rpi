@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="serbot_opencv" type="serbot_fullbody_detect2.py" name="serbot_fullbody_detect"  output="screen">
+  </node>
+</launch>
