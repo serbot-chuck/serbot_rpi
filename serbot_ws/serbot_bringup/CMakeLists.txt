@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   diagnostic_msgs
   serbot_msgs
+  raspicam
 )
 
 ################################################################################
@@ -43,6 +44,11 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+
+#add_executable(raspicam_node src/raspicam_node.cpp)
+#add_executable(raspicam_raw_node src/raspicam_raw_node.cpp)
+#target_link_libraries(raspicam_raw_node ${catkin_LIBRARIES})
 
 add_executable(serbot_diagnostics src/serbot_diagnostics.cpp)
 add_dependencies(serbot_diagnostics ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

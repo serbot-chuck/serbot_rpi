@@ -1,0 +1,9 @@
+<launch>
+
+  <node name="raspicam_node" pkg="raspicam" type="raspicam_raw_node" output="screen" >
+      <param name="quality" value="2"/>
+      <param name="framerate" value="2"/>
+  </node>
+  <node name="rosservice" pkg="rosservice" type="rosservice" args="call /camera/start_capture" />
+
+</launch>

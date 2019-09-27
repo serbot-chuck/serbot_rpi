@@ -1,5 +1,5 @@
 <launch>
-  <!--<arg name="multi_robot_name" default=""/>-->
+  <arg name="multi_robot_name" default=""/>
 
   <node pkg="rosserial_python" type="serial_node.py" name="serbot_core" output="screen">
     <param name="port" value="/dev/ttyACM0"/>

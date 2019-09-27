@@ -10,13 +10,10 @@
     <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
   </include>
 
-<!--
-  <include file="$(find serbot_bringup)/launch/serbot_teleop_client.launch">
-  </include>
--->
   <node name="sound_play" pkg="serbot_bringup" type="play_sound.py" />
-  
-  <!--<include file="$(find serbot_bringup)/launch/serbot_localization.launch"/>-->
+  <node name="raspicam_node" pkg="raspicam" type="raspicam_raw_node" output="screen" />
+  <node name="rosservice" pkg="rosservice" type="rosservice" args="call /camera/start_capture" />
+
 
   <node pkg="serbot_bringup" type="serbot_diagnostics" name="serbot_diagnostics" output="screen"/>
 </launch>

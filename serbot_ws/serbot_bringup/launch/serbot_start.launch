@@ -1,0 +1,17 @@
+<launch>
+  <arg name="set_frame_id" default="base_scan"/>
+
+  <include file="$(find serbot_bringup)/launch/serbot_core.launch"/>
+
+  <node name="scanPublisher"          pkg="rplidar_ros"  type="scanPublisher" output="screen">
+  <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
+  <param name="serial_baudrate"     type="int"    value="115200"/>
+  <param name="frame_id"            type="string" value="$(arg set_frame_id)"/>
+  <param name="inverted"            type="bool"   value="false"/>
+  <param name="angle_compensate"    type="bool"   value="true"/>
+  </node>
+
+  <node name="sound_play" pkg="serbot_bringup" type="play_sound.py" />
+
+  <node pkg="serbot_bringup" type="serbot_diagnostics" name="serbot_diagnostics" output="screen"/>
+</launch>
